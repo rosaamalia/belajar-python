@@ -1,0 +1,7 @@
+python-3.8.0
+
+# inisialisasi database
+flask db init
+# migrate
+flask db migrate -m "pesan migrasi"
+flask db upgrade
