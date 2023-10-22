@@ -1,0 +1,103 @@
+2023-10-20 09:21:37,989 - test_logger - DEBUG - Initial run flask API
+2023-10-20 09:21:38,043 - werkzeug - INFO -  * Restarting with stat
+2023-10-20 09:21:40,501 - test_logger - DEBUG - Initial run flask API
+2023-10-20 09:21:40,719 - werkzeug - INFO -  * Running on http://localhost:5070/ (Press CTRL+C to quit)
+2023-10-20 09:30:29,803 - werkzeug - INFO -  * Detected change in 'D:\\Belajar\\belajar-python\\day_3_api\\app\\__init__.py', reloading
+2023-10-20 09:30:29,952 - werkzeug - INFO -  * Restarting with stat
+2023-10-20 09:30:33,378 - test_logger - DEBUG - Initial run flask API
+2023-10-20 09:30:33,548 - werkzeug - INFO -  * Running on http://localhost:5070/ (Press CTRL+C to quit)
+2023-10-20 09:30:46,398 - werkzeug - INFO -  * Detected change in 'D:\\Belajar\\belajar-python\\day_3_api\\app\\__init__.py', reloading
+2023-10-20 09:30:46,542 - werkzeug - INFO -  * Restarting with stat
+2023-10-20 09:30:49,525 - test_logger - DEBUG - Initial run flask API
+2023-10-20 09:30:49,723 - werkzeug - INFO -  * Running on http://localhost:5070/ (Press CTRL+C to quit)
+2023-10-20 09:44:37,170 - werkzeug - INFO - 127.0.0.1 - - [20/Oct/2023 09:44:37] "GET /docs HTTP/1.1" 200 -
+2023-10-20 09:44:37,342 - werkzeug - INFO - 127.0.0.1 - - [20/Oct/2023 09:44:37] "GET /swaggerui/droid-sans.css HTTP/1.1" 200 -
+2023-10-20 09:44:37,424 - werkzeug - INFO - 127.0.0.1 - - [20/Oct/2023 09:44:37] "GET /swaggerui/swagger-ui.css HTTP/1.1" 200 -
+2023-10-20 09:44:37,766 - werkzeug - INFO - 127.0.0.1 - - [20/Oct/2023 09:44:37] "GET /swaggerui/swagger-ui-standalone-preset.js HTTP/1.1" 200 -
+2023-10-20 09:44:37,806 - werkzeug - INFO - 127.0.0.1 - - [20/Oct/2023 09:44:37] "GET /swaggerui/swagger-ui-bundle.js HTTP/1.1" 200 -
+2023-10-20 09:44:38,467 - werkzeug - INFO - 127.0.0.1 - - [20/Oct/2023 09:44:38] "GET /swagger.json HTTP/1.1" 200 -
+2023-10-20 09:44:38,495 - werkzeug - INFO - 127.0.0.1 - - [20/Oct/2023 09:44:38] "GET /swaggerui/favicon-32x32.png HTTP/1.1" 200 -
+2023-10-20 09:44:45,272 - sqlalchemy.engine.Engine - INFO - SELECT DATABASE()
+2023-10-20 09:44:45,274 - sqlalchemy.engine.Engine - INFO - [raw sql] {}
+2023-10-20 09:44:45,280 - sqlalchemy.engine.Engine - INFO - SELECT @@sql_mode
+2023-10-20 09:44:45,281 - sqlalchemy.engine.Engine - INFO - [raw sql] {}
+2023-10-20 09:44:45,286 - sqlalchemy.engine.Engine - INFO - SELECT @@lower_case_table_names
+2023-10-20 09:44:45,288 - sqlalchemy.engine.Engine - INFO - [raw sql] {}
+2023-10-20 09:44:45,293 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2023-10-20 09:44:45,300 - sqlalchemy.engine.Engine - INFO - SELECT users.id AS users_id, users.username AS users_username, users.password AS users_password 
+FROM users
+2023-10-20 09:44:45,302 - sqlalchemy.engine.Engine - INFO - [generated in 0.00172s] {}
+2023-10-20 09:44:45,313 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2023-10-20 09:44:45,315 - werkzeug - INFO - 127.0.0.1 - - [20/Oct/2023 09:44:45] "GET /users/ HTTP/1.1" 200 -
+2023-10-20 10:05:08,234 - werkzeug - INFO -  * Detected change in 'D:\\Belajar\\belajar-python\\day_3_api\\app\\views\\users.py', reloading
+2023-10-20 10:05:08,406 - werkzeug - INFO -  * Restarting with stat
+2023-10-20 10:12:18,291 - werkzeug - INFO -  * Restarting with stat
+2023-10-20 10:45:59,403 - werkzeug - INFO -  * Restarting with stat
+2023-10-21 22:54:12,879 - test_logger - DEBUG - Initial run flask API
+2023-10-21 22:54:12,962 - werkzeug - INFO -  * Restarting with stat
+2023-10-21 22:54:15,050 - test_logger - DEBUG - Initial run flask API
+2023-10-21 22:54:15,121 - werkzeug - WARNING -  * Debugger is active!
+2023-10-21 22:54:15,154 - werkzeug - INFO -  * Debugger PIN: 574-695-004
+2023-10-21 22:54:15,368 - werkzeug - INFO -  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+2023-10-21 22:54:23,835 - test_logger - DEBUG - Initial run flask API
+2023-10-21 22:54:23,954 - werkzeug - INFO -  * Restarting with stat
+2023-10-21 22:54:27,228 - test_logger - DEBUG - Initial run flask API
+2023-10-21 22:54:27,515 - werkzeug - INFO -  * Running on http://localhost:5070/ (Press CTRL+C to quit)
+2023-10-21 22:55:48,831 - werkzeug - INFO - 127.0.0.1 - - [21/Oct/2023 22:55:48] "[33mGET / HTTP/1.1[0m" 404 -
+2023-10-21 22:55:49,230 - werkzeug - INFO - 127.0.0.1 - - [21/Oct/2023 22:55:49] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2023-10-21 22:55:53,325 - werkzeug - INFO - 127.0.0.1 - - [21/Oct/2023 22:55:53] "GET /docs HTTP/1.1" 200 -
+2023-10-21 22:55:53,604 - werkzeug - INFO - 127.0.0.1 - - [21/Oct/2023 22:55:53] "GET /swaggerui/droid-sans.css HTTP/1.1" 200 -
+2023-10-21 22:55:53,746 - werkzeug - INFO - 127.0.0.1 - - [21/Oct/2023 22:55:53] "GET /swaggerui/swagger-ui.css HTTP/1.1" 200 -
+2023-10-21 22:55:53,828 - werkzeug - INFO - 127.0.0.1 - - [21/Oct/2023 22:55:53] "GET /swaggerui/swagger-ui-bundle.js HTTP/1.1" 200 -
+2023-10-21 22:55:53,877 - werkzeug - INFO - 127.0.0.1 - - [21/Oct/2023 22:55:53] "GET /swaggerui/swagger-ui-standalone-preset.js HTTP/1.1" 200 -
+2023-10-21 22:55:54,406 - werkzeug - INFO - 127.0.0.1 - - [21/Oct/2023 22:55:54] "GET /swagger.json HTTP/1.1" 200 -
+2023-10-21 22:55:54,448 - werkzeug - INFO - 127.0.0.1 - - [21/Oct/2023 22:55:54] "GET /swaggerui/favicon-32x32.png HTTP/1.1" 200 -
+2023-10-21 22:56:02,774 - sqlalchemy.engine.Engine - INFO - SELECT DATABASE()
+2023-10-21 22:56:02,774 - sqlalchemy.engine.Engine - INFO - [raw sql] {}
+2023-10-21 22:56:02,774 - sqlalchemy.engine.Engine - INFO - SELECT @@sql_mode
+2023-10-21 22:56:02,781 - sqlalchemy.engine.Engine - INFO - [raw sql] {}
+2023-10-21 22:56:02,783 - sqlalchemy.engine.Engine - INFO - SELECT @@lower_case_table_names
+2023-10-21 22:56:02,784 - sqlalchemy.engine.Engine - INFO - [raw sql] {}
+2023-10-21 22:56:02,786 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2023-10-21 22:56:02,793 - sqlalchemy.engine.Engine - INFO - SELECT users.id AS users_id, users.username AS users_username, users.password AS users_password 
+FROM users
+2023-10-21 22:56:02,795 - sqlalchemy.engine.Engine - INFO - [generated in 0.00142s] {}
+2023-10-21 22:56:02,841 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2023-10-21 22:56:02,844 - werkzeug - INFO - 127.0.0.1 - - [21/Oct/2023 22:56:02] "[35m[1mGET /users/ HTTP/1.1[0m" 500 -
+2023-10-21 22:56:42,951 - werkzeug - INFO -  * Detected change in 'D:\\Belajar\\belajar-python\\day_3_api\\app\\views\\users.py', reloading
+2023-10-21 22:56:43,082 - werkzeug - INFO -  * Restarting with stat
+2023-10-21 22:56:45,649 - test_logger - DEBUG - Initial run flask API
+2023-10-21 22:56:45,942 - werkzeug - INFO -  * Running on http://localhost:5070/ (Press CTRL+C to quit)
+2023-10-21 22:56:50,547 - sqlalchemy.engine.Engine - INFO - SELECT DATABASE()
+2023-10-21 22:56:50,547 - sqlalchemy.engine.Engine - INFO - [raw sql] {}
+2023-10-21 22:56:50,547 - sqlalchemy.engine.Engine - INFO - SELECT @@sql_mode
+2023-10-21 22:56:50,547 - sqlalchemy.engine.Engine - INFO - [raw sql] {}
+2023-10-21 22:56:50,547 - sqlalchemy.engine.Engine - INFO - SELECT @@lower_case_table_names
+2023-10-21 22:56:50,547 - sqlalchemy.engine.Engine - INFO - [raw sql] {}
+2023-10-21 22:56:50,555 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2023-10-21 22:56:50,558 - sqlalchemy.engine.Engine - INFO - SELECT users.id AS users_id, users.username AS users_username, users.password AS users_password 
+FROM users
+2023-10-21 22:56:50,559 - sqlalchemy.engine.Engine - INFO - [generated in 0.00121s] {}
+2023-10-21 22:56:50,566 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2023-10-21 22:56:50,568 - werkzeug - INFO - 127.0.0.1 - - [21/Oct/2023 22:56:50] "[35m[1mGET /users/ HTTP/1.1[0m" 500 -
+2023-10-21 22:57:28,623 - werkzeug - INFO -  * Detected change in 'D:\\Belajar\\belajar-python\\day_3_api\\app\\views\\users.py', reloading
+2023-10-21 22:57:28,757 - werkzeug - INFO -  * Restarting with stat
+2023-10-21 22:57:31,323 - test_logger - DEBUG - Initial run flask API
+2023-10-21 22:57:31,572 - werkzeug - INFO -  * Running on http://localhost:5070/ (Press CTRL+C to quit)
+2023-10-21 22:57:42,952 - sqlalchemy.engine.Engine - INFO - SELECT DATABASE()
+2023-10-21 22:57:42,952 - sqlalchemy.engine.Engine - INFO - [raw sql] {}
+2023-10-21 22:57:42,969 - sqlalchemy.engine.Engine - INFO - SELECT @@sql_mode
+2023-10-21 22:57:42,969 - sqlalchemy.engine.Engine - INFO - [raw sql] {}
+2023-10-21 22:57:42,969 - sqlalchemy.engine.Engine - INFO - SELECT @@lower_case_table_names
+2023-10-21 22:57:42,969 - sqlalchemy.engine.Engine - INFO - [raw sql] {}
+2023-10-21 22:57:42,973 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2023-10-21 22:57:42,976 - sqlalchemy.engine.Engine - INFO - SELECT users.id AS users_id, users.username AS users_username, users.password AS users_password 
+FROM users
+2023-10-21 22:57:42,977 - sqlalchemy.engine.Engine - INFO - [generated in 0.00108s] {}
+2023-10-21 22:57:42,979 - test_logger - INFO - Users data found
+2023-10-21 22:57:42,980 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2023-10-21 22:57:42,980 - werkzeug - INFO - 127.0.0.1 - - [21/Oct/2023 22:57:42] "GET /users/ HTTP/1.1" 200 -
+2023-10-21 22:59:26,350 - werkzeug - INFO -  * Detected change in 'D:\\Belajar\\belajar-python\\day_3_api\\app\\__init__.py', reloading
+2023-10-21 22:59:26,483 - werkzeug - INFO -  * Restarting with stat
+2023-10-21 22:59:29,793 - test_logger - DEBUG - Initial run flask API
+2023-10-21 22:59:29,959 - werkzeug - INFO -  * Running on http://localhost:5070/ (Press CTRL+C to quit)

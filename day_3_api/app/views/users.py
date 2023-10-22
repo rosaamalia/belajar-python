@@ -3,6 +3,7 @@ from flask import request, jsonify
 from flask_restx import Namespace, Resource, fields
 
 from ..utils import db
+from ..logs.log import logger
 from ..models.users import Users
 
 # namespace digunakan untuk mengelompokkan route yang berkaitan dengan entitas tertentu
@@ -29,33 +30,21 @@ class UserGetPost(Resource):
     # data - berisi json di body request
 
     # .doc() untuk memberikan keterangan di swagger nya
-    @users_ns.marshal_list_with(users_model)
+    @users_ns.marshal_list_with(users_model) # untuk mengonversi banyak objek ke format JSON
     @users_ns.doc(description = "Get all users")
     def get(self):
         """Get all users"""
         try:
             data = Users.query.all()
+            logger.info(f"Users data found")
             return data, HTTPStatus.OK
-
-            # users_list = []
-            # for user in data:
-            #     users_list.append({
-            #         'id': user.id,
-            #         'username': user.username,
-            #         'password': user.password
-            #     })
-
-            # return jsonify({
-            #     "status": 200,
-            #     "message": "Berhasil mengambil data user",
-            #     "data": users_list
-            # }), 200
         except Exception as e:
+            print(str(e))
             return [], HTTPStatus.INTERNAL_SERVER_ERROR
     
     @users_ns.doc(description = "Create new user data")
-    @users_ns.expect(users_model) # menggunakan model 'users_model' untuk validasi input
-    @users_ns.marshal_with(users_model)
+    @users_ns.expect(users_model) # menggunakan model 'users_model' untuk validasi input di body
+    @users_ns.marshal_with(users_model) # untuk mengonversi satu objek ke format JSON
     def post(self):
         """Create new user data"""
         try:
@@ -91,12 +80,27 @@ class UserById(Resource):
     @users_ns.expect(users_model)
     @users_ns.marshal_with(users_model)
     def put(self, user_id):
+        """Edit user data"""
         try:
             data_from_database = Users.query.get_or_404(user_id)
-            data = request.get_json()
+            data = request.get_json(force=True)
 
             data_from_database.username = data['username']
             data_from_database.password = data['password']
+            db.session.commit()
+
+            return [], HTTPStatus.OK
+        except Exception as e:
+            return [], HTTPStatus.INTERNAL_SERVER_ERROR
+    
+    @users_ns.doc(description = "Delete user data by id", params = {"user_id": "Id user"})
+    @users_ns.marshal_with(users_model)
+    def delete(self, user_id):
+        """Delete user data"""
+        try:
+            data = Users.query.get_or_404(user_id)
+
+            db.session.delete(data)
             db.session.commit()
 
             return [], HTTPStatus.OK

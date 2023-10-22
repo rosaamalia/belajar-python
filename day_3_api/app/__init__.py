@@ -4,9 +4,11 @@ from flask_migrate import Migrate
 from .config.config import config_dict
 from .views.users import users_ns
 from .utils import db
+from .logs.log import logger
 from .models import users
 
 def create_app(config=config_dict['dev']):
+    logger.debug('Initial run flask API')
     app = Flask(__name__)
     app.config.from_object(config)
 
@@ -22,5 +24,6 @@ def create_app(config=config_dict['dev']):
     api.add_namespace(users_ns)
 
     migrate = Migrate(app, db)
+
 
     return app
