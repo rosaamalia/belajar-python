@@ -1,6 +1,7 @@
 from http import HTTPStatus
 from flask import request, jsonify, current_app, Response
 from flask_restx import Namespace, Resource, fields
+from flask_jwt_extended import jwt_required
 
 from ..utils import db
 from ..utils.utils import checkCategoryNameExist
@@ -51,6 +52,8 @@ categories_get_model = categories_ns.model(
 class CategoryGetPost(Resource):
     @categories_ns.marshal_list_with(categories_get_model)
     @categories_ns.doc(description = "Get all categories")
+    @categories_ns.doc(params={'Authorization': {'in': 'header', 'description': 'Access Token'}})
+    @jwt_required()
     def get(self):
         """Get all categories"""
         try:
@@ -62,6 +65,8 @@ class CategoryGetPost(Resource):
     @categories_ns.doc(description = "Create new category data")
     @categories_ns.expect(categories_input_model)
     @categories_ns.marshal_with(categories_input_model)
+    @categories_ns.doc(params={'Authorization': {'in': 'header', 'description': 'Access Token'}})
+    @jwt_required()
     def post(self):
         """Create new category data"""
         # data = categories_ns.payload # bisa pakai ini juga
@@ -85,6 +90,8 @@ class CategoryGetPost(Resource):
 class CategoryById(Resource):
     @categories_ns.doc(description = "Get category data by id", params = {"category_id": "Id category"})
     @categories_ns.marshal_list_with(categories_get_model)
+    @categories_ns.doc(params={'Authorization': {'in': 'header', 'description': 'Access Token'}})
+    @jwt_required()
     def get(self, category_id):
         """Get category data by id"""
         try:
@@ -97,6 +104,8 @@ class CategoryById(Resource):
     @categories_ns.doc(description = "Edit category data by id", params = {"category_id": "Id category"})
     @categories_ns.expect(categories_input_model)
     @categories_ns.marshal_with(categories_input_model)
+    @categories_ns.doc(params={'Authorization': {'in': 'header', 'description': 'Access Token'}})
+    @jwt_required()
     def put(self, category_id):
         """Edit category data"""
         try:
@@ -113,14 +122,13 @@ class CategoryById(Resource):
     
     @categories_ns.doc(description = "Delete category data by id", params = {"category_id": "Id category"})
     @categories_ns.marshal_with(categories_input_model)
+    @categories_ns.doc(params={'Authorization': {'in': 'header', 'description': 'Access Token'}})
+    @jwt_required()
     def delete(self, category_id):
         """Delete category data"""
-        try:
-            data = Categories.query.get_or_404(category_id)
+        data = Categories.query.get_or_404(category_id)
 
-            db.session.delete(data)
-            db.session.commit()
+        db.session.delete(data)
+        db.session.commit()
 
-            return [], HTTPStatus.OK
-        except Exception as e:
-            return [], HTTPStatus.INTERNAL_SERVER_ERROR
+        return {'message': "Data is succesfully deleted."}, HTTPStatus.OK

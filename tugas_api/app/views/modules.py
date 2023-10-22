@@ -1,10 +1,12 @@
 from http import HTTPStatus
 from flask import request, jsonify, current_app, Response
 from flask_restx import Namespace, Resource, fields
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from ..utils import db
-from..utils.utils import checkCourseExist
+from..utils.utils import checkAuthenticated, checkCourseExist
 from ..models.modules import Modules
+from ..models.courses import Courses
 
 modules_ns = Namespace('modules', description='Namespace for modules')
 
@@ -65,6 +67,8 @@ modules_output_model = modules_ns.model(
 class ModuleGetPost(Resource):
     @modules_ns.marshal_list_with(modules_output_model)
     @modules_ns.doc(description = "Get all modules")
+    @modules_ns.doc(params={'Authorization': {'in': 'header', 'description': 'Access Token'}})
+    @jwt_required()
     def get(self):
         """Get all modules"""
         try:
@@ -76,6 +80,8 @@ class ModuleGetPost(Resource):
     @modules_ns.doc(description = "Create new module data")
     @modules_ns.expect(modules_input_model)
     @modules_ns.marshal_with(modules_input_model)
+    @modules_ns.doc(params={'Authorization': {'in': 'header', 'description': 'Access Token'}})
+    @jwt_required()
     def post(self):
         """Create new module data"""
         # data = modules_ns.payload # bisa pakai ini juga
@@ -84,6 +90,12 @@ class ModuleGetPost(Resource):
         # cek course tersedia
         if(checkCourseExist(data.get('course_id')) is False):
             modules_ns.abort(HTTPStatus.BAD_REQUEST, message="Course is not found.")
+        
+        course = Courses.query.get(data.get('course_id'))
+
+        email = get_jwt_identity()
+        if(checkAuthenticated(course.instructor_id, email) is False):
+            modules_ns.abort(HTTPStatus.UNAUTHORIZED, message="You don't have permission to do this action.")
 
         module = Modules(**data)
 
@@ -97,6 +109,8 @@ class ModuleGetPost(Resource):
 class ModuleById(Resource):
     @modules_ns.doc(description = "Get module data by id", params = {"module_id": "Id module"})
     @modules_ns.marshal_list_with(modules_output_model)
+    @modules_ns.doc(params={'Authorization': {'in': 'header', 'description': 'Access Token'}})
+    @jwt_required()
     def get(self, module_id):
         """Get module data by id"""
         try:
@@ -109,33 +123,43 @@ class ModuleById(Resource):
     @modules_ns.doc(description = "Edit module data by id", params = {"module_id": "Id module"})
     @modules_ns.expect(modules_input_model)
     @modules_ns.marshal_with(modules_input_model)
+    @modules_ns.doc(params={'Authorization': {'in': 'header', 'description': 'Access Token'}})
+    @jwt_required()
     def put(self, module_id):
         """Edit module data"""
-        try:
-            data_from_database = Modules.query.get_or_404(module_id)
-            data = request.get_json(force=True)
+        data_from_database = Modules.query.get_or_404(module_id)
+        data = request.get_json(force=True)
 
-            data_from_database.title = data['title']
-            data_from_database.description = data['description']
-            data_from_database.content = data['content']
-            data_from_database.course_id = data['course_id']
+        course = Courses.query.get(data_from_database.course_id)
 
-            db.session.commit()
+        email = get_jwt_identity()
+        if(checkAuthenticated(course.instructor_id, email) is False):
+            modules_ns.abort(HTTPStatus.UNAUTHORIZED, message="You don't have permission to do this action.")
 
-            return [], HTTPStatus.OK
-        except Exception as e:
-            return [], HTTPStatus.INTERNAL_SERVER_ERROR
+        data_from_database.title = data['title']
+        data_from_database.description = data['description']
+        data_from_database.content = data['content']
+        data_from_database.course_id = data['course_id']
+
+        db.session.commit()
+
+        return data_from_database, HTTPStatus.OK
     
     @modules_ns.doc(description = "Delete module data by id", params = {"module_id": "Id module"})
     @modules_ns.marshal_with(modules_input_model)
+    @modules_ns.doc(params={'Authorization': {'in': 'header', 'description': 'Access Token'}})
+    @jwt_required()
     def delete(self, module_id):
         """Delete module data"""
-        try:
-            data = Modules.query.get_or_404(module_id)
+        data = Modules.query.get_or_404(module_id)
 
-            db.session.delete(data)
-            db.session.commit()
+        course = Courses.query.get(data.course_id)
 
-            return [], HTTPStatus.OK
-        except Exception as e:
-            return [], HTTPStatus.INTERNAL_SERVER_ERROR
+        email = get_jwt_identity()
+        if(checkAuthenticated(course.instructor_id, email) is False):
+            modules_ns.abort(HTTPStatus.UNAUTHORIZED, message="You don't have permission to do this action.")
+
+        db.session.delete(data)
+        db.session.commit()
+
+        return {'message': "Data is succesfully deleted."}, HTTPStatus.OK

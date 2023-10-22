@@ -1,9 +1,10 @@
 from http import HTTPStatus
 from flask import request, jsonify, current_app, Response
 from flask_restx import Namespace, Resource, fields
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from ..utils import db
-from ..utils.utils import checkUserExist, checkUserRole, checkCourseExist, checkUserAlreadyEnrolled, updateTotalRating
+from ..utils.utils import checkAuthenticated, checkUserExist, checkUserRole, checkCourseExist, checkUserAlreadyEnrolled, updateTotalRating
 from ..models.enrollments import Enrollments
 
 enrollments_ns = Namespace('enrollments', description='Namespace for enrollments')
@@ -35,6 +36,8 @@ enrollments_output_model = enrollments_ns.model(
 class EnrollmentResource(Resource):
     @enrollments_ns.expect(enrollments_input_model)
     @enrollments_ns.marshal_with(enrollments_output_model)
+    @enrollments_ns.doc(params={'Authorization': {'in': 'header', 'description': 'Access Token'}})
+    @jwt_required()
     def post(self):
         """Create a new enrollment"""
         data = enrollments_ns.payload
@@ -74,6 +77,8 @@ class EnrollmentResource(Resource):
 class EnrollmentById(Resource):
     @enrollments_ns.doc(description = "Get enrollment data by id", params = {"enrollment_id": "Id enrollment"})
     @enrollments_ns.marshal_list_with(enrollments_output_model)
+    @enrollments_ns.doc(params={'Authorization': {'in': 'header', 'description': 'Access Token'}})
+    @jwt_required()
     def get(self, enrollment_id):
         """Get enrollment data by id"""
         try:
@@ -86,10 +91,16 @@ class EnrollmentById(Resource):
     @enrollments_ns.doc(description = "Edit enrollment data by id", params = {"enrollment_id": "Id enrollment"})
     @enrollments_ns.expect(enrollments_input_model)
     @enrollments_ns.marshal_with(enrollments_input_model)
+    @enrollments_ns.doc(params={'Authorization': {'in': 'header', 'description': 'Access Token'}})
+    @jwt_required()
     def put(self, enrollment_id):
         """Edit enrollment data"""
         data_from_database = Enrollments.query.get_or_404(enrollment_id)
         data = request.get_json(force=True)
+
+        email = get_jwt_identity()
+        if(checkAuthenticated(data_from_database.user_id, email) is False):
+            enrollments_ns.abort(HTTPStatus.UNAUTHORIZED, message="You don't have permission to do this action.")
 
         # Cek nilai rating di antara 0 sampai 5
         if(data['rating'] > 5 or data['rating'] < 0):
@@ -107,15 +118,17 @@ class EnrollmentById(Resource):
         return data_from_database, HTTPStatus.OK
     
     @enrollments_ns.doc(description = "Delete enrollment data by id", params = {"enrollment_id": "Id enrollment"})
-    @enrollments_ns.marshal_with(enrollments_input_model)
+    @enrollments_ns.doc(params={'Authorization': {'in': 'header', 'description': 'Access Token'}})
+    @jwt_required()
     def delete(self, enrollment_id):
         """Delete enrollment data"""
-        try:
-            data = Enrollments.query.get_or_404(enrollment_id)
+        data = Enrollments.query.get_or_404(enrollment_id)
 
-            db.session.delete(data)
-            db.session.commit()
+        email = get_jwt_identity()
+        if(checkAuthenticated(data.user_id, email) is False):
+            enrollments_ns.abort(HTTPStatus.UNAUTHORIZED, message="You don't have permission to do this action.")
 
-            return [], HTTPStatus.OK
-        except Exception as e:
-            return [], HTTPStatus.INTERNAL_SERVER_ERROR
+        db.session.delete(data)
+        db.session.commit()
+
+        return {'message': "Data is succesfully deleted."}, HTTPStatus.OK

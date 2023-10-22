@@ -2,12 +2,15 @@ from flask import Flask, current_app
 from flask_restx import Api
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
+from flask_jwt_extended import JWTManager
+
 from .config.config import config_dict
 from .views.users import users_ns
 from .views.courses import courses_ns
 from .views.categories import categories_ns
 from .views.enrollments import enrollments_ns
 from .views.modules import modules_ns
+from .views.auth import auth_ns
 from .utils import db
 from .models import users, courses, categories, modules, enrollments
 
@@ -24,6 +27,7 @@ def create_app(config=config_dict['dev']):
         description="COURSE ONLINE"
     )
 
+    api.add_namespace(auth_ns)
     api.add_namespace(users_ns)
     api.add_namespace(courses_ns)
     api.add_namespace(categories_ns)
@@ -32,6 +36,7 @@ def create_app(config=config_dict['dev']):
 
     migrate = Migrate(app, db)
     bcrypt = Bcrypt(app)
+    jwt = JWTManager(app)
     
     with app.app_context():
         current_app.extensions['bcrypt'] = bcrypt

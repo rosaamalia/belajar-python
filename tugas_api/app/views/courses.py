@@ -1,9 +1,10 @@
 from http import HTTPStatus
 from flask import request, jsonify, current_app, Response
 from flask_restx import Namespace, Resource, fields
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from ..utils import db
-from ..utils.utils import checkCourseTitleExist, checkCategoryExist, checkUserExist, checkUserRole
+from ..utils.utils import checkAuthenticated, checkCourseTitleExist, checkCategoryExist, checkUserExist, checkUserRole
 from ..models.courses import Courses
 
 courses_ns = Namespace('courses', description='Namespace for courses')
@@ -79,6 +80,8 @@ courses_get_model = courses_ns.model(
 class CourseGetPost(Resource):
     @courses_ns.marshal_list_with(courses_get_model)
     @courses_ns.doc(description = "Get all courses")
+    @courses_ns.doc(params={'Authorization': {'in': 'header', 'description': 'Access Token'}})
+    @jwt_required()
     def get(self):
         """Get all courses"""
         try:
@@ -90,6 +93,8 @@ class CourseGetPost(Resource):
     @courses_ns.doc(description = "Create new course data")
     @courses_ns.expect(courses_input_model)
     @courses_ns.marshal_with(courses_input_model)
+    @courses_ns.doc(params={'Authorization': {'in': 'header', 'description': 'Access Token'}})
+    @jwt_required()
     def post(self):
         """Create new course data"""
         # data = courses_ns.payload # bisa pakai ini juga
@@ -130,6 +135,8 @@ class CourseGetPost(Resource):
 class CourseById(Resource):
     @courses_ns.doc(description = "Get course data by id", params = {"course_id": "Id course"})
     @courses_ns.marshal_list_with(courses_get_model)
+    @courses_ns.doc(params={'Authorization': {'in': 'header', 'description': 'Access Token'}})
+    @jwt_required()
     def get(self, course_id):
         """Get course data by id"""
         try:
@@ -142,34 +149,40 @@ class CourseById(Resource):
     @courses_ns.doc(description = "Edit course data by id", params = {"course_id": "Id course"})
     @courses_ns.expect(courses_input_model)
     @courses_ns.marshal_with(courses_input_model)
+    @courses_ns.doc(params={'Authorization': {'in': 'header', 'description': 'Access Token'}})
+    @jwt_required()
     def put(self, course_id):
         """Edit course data"""
-        try:
-            data_from_database = Courses.query.get_or_404(course_id)
-            data = request.get_json(force=True)
+        data_from_database = Courses.query.get_or_404(course_id)
+        data = request.get_json(force=True)
 
-            data_from_database.title = data['title']
-            data_from_database.description = data['description']
-            data_from_database.rating_total = data['rating_total']
-            data_from_database.category_id = data['category_id']
-            data_from_database.instructor_id = data['instructor_id']
+        email = get_jwt_identity()
+        if(checkAuthenticated(data_from_database.instructor_id, email) is False):
+            courses_ns.abort(HTTPStatus.UNAUTHORIZED, message="You don't have permission to do this action.")
 
-            db.session.commit()
+        data_from_database.title = data['title']
+        data_from_database.description = data['description']
+        data_from_database.rating_total = data['rating_total']
+        data_from_database.category_id = data['category_id']
+        data_from_database.instructor_id = data['instructor_id']
 
-            return [], HTTPStatus.OK
-        except Exception as e:
-            return [], HTTPStatus.INTERNAL_SERVER_ERROR
+        db.session.commit()
+
+        return data_from_database, HTTPStatus.OK
     
     @courses_ns.doc(description = "Delete course data by id", params = {"course_id": "Id course"})
     @courses_ns.marshal_with(courses_input_model)
+    @courses_ns.doc(params={'Authorization': {'in': 'header', 'description': 'Access Token'}})
+    @jwt_required()
     def delete(self, course_id):
         """Delete course data"""
-        try:
-            data = Courses.query.get_or_404(course_id)
+        data = Courses.query.get_or_404(course_id)
 
-            db.session.delete(data)
-            db.session.commit()
+        email = get_jwt_identity()
+        if(checkAuthenticated(data.instructor_id, email) is False):
+            courses_ns.abort(HTTPStatus.UNAUTHORIZED, message="You don't have permission to do this action.")
 
-            return [], HTTPStatus.OK
-        except Exception as e:
-            return [], HTTPStatus.INTERNAL_SERVER_ERROR
+        db.session.delete(data)
+        db.session.commit()
+
+        return {'message': "Data is succesfully deleted."}, HTTPStatus.OK

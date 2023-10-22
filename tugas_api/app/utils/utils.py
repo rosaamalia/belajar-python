@@ -1,15 +1,30 @@
-from http import HTTPStatus
-
 from . import db
 from ..models.users import Users
 from ..models.enrollments import Enrollments
 from ..models.courses import Courses
-from ..models.modules import Modules
 from ..models.categories import Categories
+
+# Cek user terautentikasi
+def checkAuthenticated(user_id, email):
+    user = Users.query.get(user_id)
+
+    if(user.email == email):
+        return True
+    else:
+        return False
 
 # Cek id user ada atau tidak
 def checkUserExist(user_id):
     user = Users.query.get(user_id)
+
+    if(user):
+        return True
+    else:
+        return False
+    
+# Cek email user sudah ada atau belum
+def checkUserEmailExist(email):
+    user = Users.query.filter_by(email=email).first()
 
     if(user):
         return True

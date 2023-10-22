@@ -1,8 +1,10 @@
 from http import HTTPStatus
-from flask import request, jsonify, current_app, Response
+from flask import request
 from flask_restx import Namespace, Resource, fields
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from ..utils import db
+from ..utils.utils import checkAuthenticated
 from ..models.users import Users
 
 users_ns = Namespace('users', description='Namespace for users')
@@ -75,6 +77,8 @@ users_output_model = users_ns.model(
 class UserGetPost(Resource):
     @users_ns.marshal_list_with(users_output_model)
     @users_ns.doc(description = "Get all users")
+    @users_ns.doc(params={'Authorization': {'in': 'header', 'description': 'Access Token'}})
+    @jwt_required()
     def get(self):
         """Get all users"""
         try:
@@ -112,6 +116,8 @@ class UserGetPost(Resource):
 class UserById(Resource):
     @users_ns.doc(description = "Get user data by id", params = {"user_id": "Id user"})
     @users_ns.marshal_list_with(users_output_model)
+    @users_ns.doc(params={'Authorization': {'in': 'header', 'description': 'Access Token'}})
+    @jwt_required()
     def get(self, user_id):
         """Get user data by id"""
         try:
@@ -124,31 +130,38 @@ class UserById(Resource):
     @users_ns.doc(description = "Edit user data by id", params = {"user_id": "Id user"})
     @users_ns.expect(users_input_model)
     @users_ns.marshal_with(users_input_model)
+    @users_ns.doc(params={'Authorization': {'in': 'header', 'description': 'Access Token'}})
+    @jwt_required()
     def put(self, user_id):
         """Edit user data"""
-        try:
-            data_from_database = Users.query.get_or_404(user_id)
-            data = request.get_json(force=True)
+        email = get_jwt_identity()
 
-            data_from_database.email = data['email']
-            data_from_database.role = data['role']
-            # data_from_database.password = data['password']
-            db.session.commit()
+        if(checkAuthenticated(user_id, email) is False):
+            users_ns.abort(HTTPStatus.UNAUTHORIZED, message="You don't have permission to do this action.")
 
-            return [], HTTPStatus.OK
-        except Exception as e:
-            return [], HTTPStatus.INTERNAL_SERVER_ERROR
+        data_from_database = Users.query.get_or_404(user_id)
+        data = request.get_json(force=True)
+
+        data_from_database.email = data['email']
+        data_from_database.role = data['role']
+        # data_from_database.password = data['password']
+        db.session.commit()
+
+        return data_from_database, HTTPStatus.OK
     
     @users_ns.doc(description = "Delete user data by id", params = {"user_id": "Id user"})
-    @users_ns.marshal_with(users_input_model)
+    @users_ns.doc(params={'Authorization': {'in': 'header', 'description': 'Access Token'}})
+    @jwt_required()
     def delete(self, user_id):
         """Delete user data"""
-        try:
-            data = Users.query.get_or_404(user_id)
+        email = get_jwt_identity()
 
-            db.session.delete(data)
-            db.session.commit()
+        if(checkAuthenticated(user_id, email) is False):
+            users_ns.abort(HTTPStatus.UNAUTHORIZED, message="You don't have permission to do this action.")
 
-            return [], HTTPStatus.OK
-        except Exception as e:
-            return [], HTTPStatus.INTERNAL_SERVER_ERROR
+        data = Users.query.get_or_404(user_id)
+
+        db.session.delete(data)
+        db.session.commit()
+
+        return {'message': "Data is succesfully deleted."}, HTTPStatus.OK
