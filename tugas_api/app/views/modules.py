@@ -5,6 +5,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from ..utils import db
 from..utils.utils import checkAuthenticated, checkCourseExist
+from ..logs.log import logger
 from ..models.modules import Modules
 from ..models.courses import Courses
 
@@ -73,8 +74,10 @@ class ModuleGetPost(Resource):
         """Get all modules"""
         try:
             data = Modules.query.all()
+            logger.info(f"GET ALL MODULE DATA")
             return data, HTTPStatus.OK
         except Exception as e:
+            logger.error(str(e))
             return [], HTTPStatus.INTERNAL_SERVER_ERROR
     
     @modules_ns.doc(description = "Create new module data")
@@ -86,16 +89,17 @@ class ModuleGetPost(Resource):
         """Create new module data"""
         # data = modules_ns.payload # bisa pakai ini juga
         data = modules_ns.payload
-        
-        # cek course tersedia
-        if(checkCourseExist(data.get('course_id')) is False):
-            modules_ns.abort(HTTPStatus.BAD_REQUEST, message="Course is not found.")
-        
         course = Courses.query.get(data.get('course_id'))
 
         email = get_jwt_identity()
         if(checkAuthenticated(course.instructor_id, email) is False):
+            logger.warning(f"{HTTPStatus.UNAUTHORIZED} - DON'T HAVE PERMISSION TO ADD MODULE DATA OF COURSE WITH ID {data.get('course_id')}")
             modules_ns.abort(HTTPStatus.UNAUTHORIZED, message="You don't have permission to do this action.")
+
+        # cek course tersedia
+        if(checkCourseExist(data.get('course_id')) is False):
+            logger.warning(f"{HTTPStatus.BAD_REQUEST} - COURSE WITH ID {data.get('course_id')} IS NOT FOUND")
+            modules_ns.abort(HTTPStatus.BAD_REQUEST, message="Course is not found.")
 
         module = Modules(**data)
 
@@ -103,6 +107,7 @@ class ModuleGetPost(Resource):
         db.session.add(module)
         db.session.commit()
 
+        logger.info(f"POST MODULE DATA WITH ID {module.id}")
         return module, HTTPStatus.CREATED
         
 @modules_ns.route('/<int:module_id>')
@@ -115,9 +120,10 @@ class ModuleById(Resource):
         """Get module data by id"""
         try:
             data = Modules.query.get_or_404(module_id)
+            logger.info(f"GET MODULE DATA WITH ID {data.id}")
             return data, HTTPStatus.OK
-
         except Exception as e:
+            logger.error(str(e))
             return [], HTTPStatus.INTERNAL_SERVER_ERROR
     
     @modules_ns.doc(description = "Edit module data by id", params = {"module_id": "Id module"})
@@ -134,6 +140,7 @@ class ModuleById(Resource):
 
         email = get_jwt_identity()
         if(checkAuthenticated(course.instructor_id, email) is False):
+            logger.warning(f"{HTTPStatus.UNAUTHORIZED} - DON'T HAVE PERMISSION TO EDIT MODULE DATA WITH ID {module_id}")
             modules_ns.abort(HTTPStatus.UNAUTHORIZED, message="You don't have permission to do this action.")
 
         data_from_database.title = data['title']
@@ -143,6 +150,7 @@ class ModuleById(Resource):
 
         db.session.commit()
 
+        logger.info(f"PUT MODULE DATA WITH ID {module_id}")
         return data_from_database, HTTPStatus.OK
     
     @modules_ns.doc(description = "Delete module data by id", params = {"module_id": "Id module"})
@@ -157,9 +165,11 @@ class ModuleById(Resource):
 
         email = get_jwt_identity()
         if(checkAuthenticated(course.instructor_id, email) is False):
+            logger.warning(f"{HTTPStatus.UNAUTHORIZED} - DON'T HAVE PERMISSION TO DELETE MODULE DATA WITH ID {module_id}")
             modules_ns.abort(HTTPStatus.UNAUTHORIZED, message="You don't have permission to do this action.")
 
         db.session.delete(data)
         db.session.commit()
 
+        logger.info(f"DELETE MODULE DATA WITH ID {module_id}")
         return {'message': "Data is succesfully deleted."}, HTTPStatus.OK

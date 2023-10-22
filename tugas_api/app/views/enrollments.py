@@ -5,6 +5,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from ..utils import db
 from ..utils.utils import checkAuthenticated, checkUserExist, checkUserRole, checkCourseExist, checkUserAlreadyEnrolled, updateTotalRating
+from ..logs.log import logger
 from ..models.enrollments import Enrollments
 
 enrollments_ns = Namespace('enrollments', description='Namespace for enrollments')
@@ -46,22 +47,27 @@ class EnrollmentResource(Resource):
 
         # Cek user ada atau tidak
         if(checkUserExist(user_id) is False):
+            logger.warning(f"{HTTPStatus.BAD_REQUEST} - USER WITH ID {user_id} IS NOT FOUND")
             enrollments_ns.abort(HTTPStatus.BAD_REQUEST, message="User is not found.")
 
         # Cek role user
         if(checkUserRole(user_id, 'STUDENT') is False):
+            logger.warning(f"{HTTPStatus.BAD_REQUEST} - USER WITH ID {user_id} IS NOT A STUDENT")
             enrollments_ns.abort(HTTPStatus.BAD_REQUEST, message="User is not a student.")
 
         # Cek course tersedia
         if(checkCourseExist(course_id) is False):
+            logger.warning(f"{HTTPStatus.BAD_REQUEST} - COURSE WITH ID {course_id} IS NOT FOUND")
             enrollments_ns.abort(HTTPStatus.BAD_REQUEST, message="Course is not found.")
 
         # Cek user sudah terdaftar atau belum
         if(checkUserAlreadyEnrolled(user_id, course_id) is True):
+            logger.warning(f"{HTTPStatus.BAD_REQUEST} - USER WITH ID {user_id} IS ALREADY ENROLLED COURSE WITH ID {course_id}")
             enrollments_ns.abort(HTTPStatus.BAD_REQUEST, message="User is already enrolled.")
 
         # Cek nilai rating di antara 0 sampai 5
         if(data.get('rating') > 5 or data.get('rating') < 0):
+            logger.warning(f"{HTTPStatus.BAD_REQUEST} - RATING IS NOT IN THE RANGE OF O TO 5")
             enrollments_ns.abort(HTTPStatus.BAD_REQUEST, message="Rating value must be in the range of 0 to 5.")
 
         enrollment = Enrollments(**data)  # Membuat objek enrollment dari payload
@@ -70,6 +76,7 @@ class EnrollmentResource(Resource):
 
         # Update nilai rating total di course
         updateTotalRating(course_id)
+        logger.info(f"POST ENROLLMENT DATA WITH ID {enrollment.id}")
 
         return enrollment, 201
 
@@ -83,9 +90,10 @@ class EnrollmentById(Resource):
         """Get enrollment data by id"""
         try:
             data = Enrollments.query.get_or_404(enrollment_id)
+            logger.info(f"GET ENROLLMENT DATA WITH ID {data.id}")
             return data, HTTPStatus.OK
-
         except Exception as e:
+            logger.error(str(e))
             return [], HTTPStatus.INTERNAL_SERVER_ERROR
     
     @enrollments_ns.doc(description = "Edit enrollment data by id", params = {"enrollment_id": "Id enrollment"})
@@ -100,10 +108,12 @@ class EnrollmentById(Resource):
 
         email = get_jwt_identity()
         if(checkAuthenticated(data_from_database.user_id, email) is False):
+            logger.warning(f"{HTTPStatus.UNAUTHORIZED} - DON'T HAVE PERMISSION TO EDIT ENROLLMENT DATA WITH ID {enrollment_id}")
             enrollments_ns.abort(HTTPStatus.UNAUTHORIZED, message="You don't have permission to do this action.")
 
         # Cek nilai rating di antara 0 sampai 5
         if(data['rating'] > 5 or data['rating'] < 0):
+            logger.warning(f"{HTTPStatus.BAD_REQUEST} - RATING IS NOT IN THE RANGE OF O TO 5")
             enrollments_ns.abort(HTTPStatus.BAD_REQUEST, message="Rating value must be in the range of 0 to 5.")
 
         data_from_database.user_id = data['user_id']
@@ -115,6 +125,7 @@ class EnrollmentById(Resource):
         db.session.commit()
         updateTotalRating(data['course_id'])
 
+        logger.info(f"EDIT ENROLLMENT DATA WITH ID {data_from_database.id}")
         return data_from_database, HTTPStatus.OK
     
     @enrollments_ns.doc(description = "Delete enrollment data by id", params = {"enrollment_id": "Id enrollment"})
@@ -126,9 +137,11 @@ class EnrollmentById(Resource):
 
         email = get_jwt_identity()
         if(checkAuthenticated(data.user_id, email) is False):
+            logger.warning(f"{HTTPStatus.UNAUTHORIZED} - DON'T HAVE PERMISSION TO DELETE ENROLLMENT DATA WITH ID {enrollment_id}")
             enrollments_ns.abort(HTTPStatus.UNAUTHORIZED, message="You don't have permission to do this action.")
 
         db.session.delete(data)
         db.session.commit()
 
+        logger.info(f"DELETE ENROLLMENT DATA WITH ID {data.id}")
         return {'message': "Data is succesfully deleted."}, HTTPStatus.OK

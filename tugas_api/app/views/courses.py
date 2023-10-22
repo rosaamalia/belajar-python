@@ -5,6 +5,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from ..utils import db
 from ..utils.utils import checkAuthenticated, checkCourseTitleExist, checkCategoryExist, checkUserExist, checkUserRole
+from ..logs.log import logger
 from ..models.courses import Courses
 
 courses_ns = Namespace('courses', description='Namespace for courses')
@@ -86,8 +87,10 @@ class CourseGetPost(Resource):
         """Get all courses"""
         try:
             data = Courses.query.all()
+            logger.info(f"GET ALL CATEGORY DATA")
             return data, HTTPStatus.OK
         except Exception as e:
+            logger.error(str(e))
             return [], HTTPStatus.INTERNAL_SERVER_ERROR
     
     @courses_ns.doc(description = "Create new course data")
@@ -104,18 +107,22 @@ class CourseGetPost(Resource):
 
         # Cek title sudah ada atau belum
         if(checkCourseTitleExist(data.get('title')) is True):
+            logger.warning(f"{HTTPStatus.BAD_REQUEST} - COURSE WITH TITLE {data.get('title')} IS ALREADY EXIST")
             courses_ns.abort(HTTPStatus.BAD_REQUEST, message="Title is already exist.")
 
         # Cek kategori ada
         if(checkCategoryExist(data.get('category_id')) is False):
+            logger.warning(f"{HTTPStatus.BAD_REQUEST} - CATEGORY WITH ID {data.get('category_id')} IS NOT FOUND")
             courses_ns.abort(HTTPStatus.BAD_REQUEST, message="Category is not found.")
         
         # Cek instruktur ada atau tidak
         if(checkUserExist(user_id) is False):
+            logger.warning(f"{HTTPStatus.BAD_REQUEST} - USER WITH ID {data.get('user_id')} IS NOT FOUND")
             courses_ns.abort(HTTPStatus.BAD_REQUEST, message="User is not found.")
         
         # Cek role user
         if(checkUserRole(user_id, 'INSTRUCTOR') is False):
+            logger.warning(f"{HTTPStatus.BAD_REQUEST} - USER WITH ID {data.get('user_id')} IS NOT A INSTRUCTOR")
             courses_ns.abort(HTTPStatus.BAD_REQUEST, message="User is not a instructor.")
 
         input = Courses(
@@ -129,6 +136,7 @@ class CourseGetPost(Resource):
         db.session.add(input)
         db.session.commit()
 
+        logger.info(f"POST COURSE DATA WITH ID {input.id}")
         return input, HTTPStatus.CREATED
         
 @courses_ns.route('/<int:course_id>')
@@ -141,9 +149,10 @@ class CourseById(Resource):
         """Get course data by id"""
         try:
             data = Courses.query.get_or_404(course_id)
+            logger.info(f"GET COURSE DATA WITH ID {data.id}")
             return data, HTTPStatus.OK
-
         except Exception as e:
+            logger.error(str(e))
             return [], HTTPStatus.INTERNAL_SERVER_ERROR
     
     @courses_ns.doc(description = "Edit course data by id", params = {"course_id": "Id course"})
@@ -158,6 +167,7 @@ class CourseById(Resource):
 
         email = get_jwt_identity()
         if(checkAuthenticated(data_from_database.instructor_id, email) is False):
+            logger.warning(f"{HTTPStatus.UNAUTHORIZED} - DON'T HAVE PERMISSION TO EDIT COURSE DATA WITH ID {course_id}")
             courses_ns.abort(HTTPStatus.UNAUTHORIZED, message="You don't have permission to do this action.")
 
         data_from_database.title = data['title']
@@ -168,6 +178,7 @@ class CourseById(Resource):
 
         db.session.commit()
 
+        logger.info(f"PUT COURSE DATA WITH ID {data_from_database.id}")
         return data_from_database, HTTPStatus.OK
     
     @courses_ns.doc(description = "Delete course data by id", params = {"course_id": "Id course"})
@@ -180,9 +191,11 @@ class CourseById(Resource):
 
         email = get_jwt_identity()
         if(checkAuthenticated(data.instructor_id, email) is False):
+            logger.warning(f"{HTTPStatus.UNAUTHORIZED} - DON'T HAVE PERMISSION TO DELETE COURSE DATA WITH ID {course_id}")
             courses_ns.abort(HTTPStatus.UNAUTHORIZED, message="You don't have permission to do this action.")
 
         db.session.delete(data)
         db.session.commit()
 
+        logger.info(f"DELETE COURSE DATA WITH ID {data.id}")
         return {'message': "Data is succesfully deleted."}, HTTPStatus.OK

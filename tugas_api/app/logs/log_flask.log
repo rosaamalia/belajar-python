@@ -1,0 +1,171 @@
+2023-10-23 00:43:20,985 - werkzeug - INFO -  * Running on http://localhost:7000/ (Press CTRL+C to quit)
+2023-10-23 00:43:46,346 - werkzeug - INFO - 127.0.0.1 - - [23/Oct/2023 00:43:46] "[31m[1mGET /users/ HTTP/1.1[0m" 401 -
+2023-10-23 00:44:09,625 - sqlalchemy.engine.Engine - INFO - SELECT DATABASE()
+2023-10-23 00:44:09,626 - sqlalchemy.engine.Engine - INFO - [raw sql] {}
+2023-10-23 00:44:09,628 - sqlalchemy.engine.Engine - INFO - SELECT @@sql_mode
+2023-10-23 00:44:09,629 - sqlalchemy.engine.Engine - INFO - [raw sql] {}
+2023-10-23 00:44:09,630 - sqlalchemy.engine.Engine - INFO - SELECT @@lower_case_table_names
+2023-10-23 00:44:09,630 - sqlalchemy.engine.Engine - INFO - [raw sql] {}
+2023-10-23 00:44:09,632 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2023-10-23 00:44:09,638 - sqlalchemy.engine.Engine - INFO - SELECT users.id AS users_id, users.email AS users_email, users.password AS users_password, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+2023-10-23 00:44:09,640 - sqlalchemy.engine.Engine - INFO - [generated in 0.00152s] {'email_1': 'testtest@mail.com', 'param_1': 1}
+2023-10-23 00:44:09,644 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2023-10-23 00:44:09,646 - werkzeug - INFO - 127.0.0.1 - - [23/Oct/2023 00:44:09] "[31m[1mPOST /auth/signin HTTP/1.1[0m" 400 -
+2023-10-23 00:44:39,871 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2023-10-23 00:44:39,872 - sqlalchemy.engine.Engine - INFO - SELECT users.id AS users_id, users.email AS users_email, users.password AS users_password, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+2023-10-23 00:44:39,873 - sqlalchemy.engine.Engine - INFO - [cached since 30.23s ago] {'email_1': 'test3@mail.com', 'param_1': 1}
+2023-10-23 00:44:40,186 - sqlalchemy.engine.Engine - INFO - INSERT INTO users (email, password, role) VALUES (%(email)s, %(password)s, %(role)s)
+2023-10-23 00:44:40,187 - sqlalchemy.engine.Engine - INFO - [generated in 0.00088s] {'email': 'test3@mail.com', 'password': '$2b$12$HtMAxTiJv8iTvUyj4ExiT.vH7KtOfuKUi2ECYT3eDMk.C0Kbjsiyu', 'role': 'STUDENT'}
+2023-10-23 00:44:40,194 - sqlalchemy.engine.Engine - INFO - COMMIT
+2023-10-23 00:44:40,199 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2023-10-23 00:44:40,201 - sqlalchemy.engine.Engine - INFO - SELECT users.id AS users_id, users.email AS users_email, users.password AS users_password, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.id = %(pk_1)s
+2023-10-23 00:44:40,203 - sqlalchemy.engine.Engine - INFO - [generated in 0.00129s] {'pk_1': 24}
+2023-10-23 00:44:40,207 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2023-10-23 00:44:40,208 - werkzeug - INFO - 127.0.0.1 - - [23/Oct/2023 00:44:40] "[35m[1mPOST /auth/signup HTTP/1.1[0m" 201 -
+2023-10-23 00:45:05,481 - werkzeug - INFO - 127.0.0.1 - - [23/Oct/2023 00:45:05] "[31m[1mGET /users/ HTTP/1.1[0m" 422 -
+2023-10-23 00:45:32,472 - werkzeug - INFO - 127.0.0.1 - - [23/Oct/2023 00:45:32] "[31m[1mGET /users/ HTTP/1.1[0m" 422 -
+2023-10-23 00:46:00,301 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2023-10-23 00:46:00,303 - sqlalchemy.engine.Engine - INFO - SELECT users.id AS users_id, users.email AS users_email, users.password AS users_password, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users
+2023-10-23 00:46:00,305 - sqlalchemy.engine.Engine - INFO - [generated in 0.00167s] {}
+2023-10-23 00:46:00,308 - [ONLINE COURSE LOG] - INFO - GET ALL USERS DATA
+2023-10-23 00:46:00,317 - sqlalchemy.engine.Engine - INFO - SELECT enrollments.id AS enrollments_id, enrollments.user_id AS enrollments_user_id, enrollments.course_id AS enrollments_course_id, enrollments.status AS enrollments_status, enrollments.rating AS enrollments_rating, enrollments.review AS enrollments_review, enrollments.created_at AS enrollments_created_at, enrollments.updated_at AS enrollments_updated_at 
+FROM enrollments 
+WHERE %(param_1)s = enrollments.user_id
+2023-10-23 00:46:00,319 - sqlalchemy.engine.Engine - INFO - [generated in 0.00216s] {'param_1': 1}
+2023-10-23 00:46:00,331 - sqlalchemy.engine.Engine - INFO - SELECT courses.id AS courses_id, courses.title AS courses_title, courses.description AS courses_description, courses.rating_total AS courses_rating_total, courses.category_id AS courses_category_id, courses.instructor_id AS courses_instructor_id, courses.created_at AS courses_created_at, courses.updated_at AS courses_updated_at 
+FROM courses 
+WHERE courses.id = %(pk_1)s
+2023-10-23 00:46:00,333 - sqlalchemy.engine.Engine - INFO - [generated in 0.00194s] {'pk_1': 1}
+2023-10-23 00:46:00,339 - sqlalchemy.engine.Engine - INFO - SELECT categories.id AS categories_id, categories.category_name AS categories_category_name, categories.created_at AS categories_created_at, categories.updated_at AS categories_updated_at 
+FROM categories 
+WHERE categories.id = %(pk_1)s
+2023-10-23 00:46:00,340 - sqlalchemy.engine.Engine - INFO - [generated in 0.00116s] {'pk_1': 1}
+2023-10-23 00:46:00,343 - sqlalchemy.engine.Engine - INFO - SELECT courses.id AS courses_id, courses.title AS courses_title, courses.description AS courses_description, courses.rating_total AS courses_rating_total, courses.category_id AS courses_category_id, courses.instructor_id AS courses_instructor_id, courses.created_at AS courses_created_at, courses.updated_at AS courses_updated_at 
+FROM courses 
+WHERE courses.id = %(pk_1)s
+2023-10-23 00:46:00,347 - sqlalchemy.engine.Engine - INFO - [cached since 0.01632s ago] {'pk_1': 6}
+2023-10-23 00:46:00,350 - sqlalchemy.engine.Engine - INFO - SELECT enrollments.id AS enrollments_id, enrollments.user_id AS enrollments_user_id, enrollments.course_id AS enrollments_course_id, enrollments.status AS enrollments_status, enrollments.rating AS enrollments_rating, enrollments.review AS enrollments_review, enrollments.created_at AS enrollments_created_at, enrollments.updated_at AS enrollments_updated_at 
+FROM enrollments 
+WHERE %(param_1)s = enrollments.user_id
+2023-10-23 00:46:00,351 - sqlalchemy.engine.Engine - INFO - [cached since 0.03442s ago] {'param_1': 2}
+2023-10-23 00:46:00,355 - sqlalchemy.engine.Engine - INFO - SELECT enrollments.id AS enrollments_id, enrollments.user_id AS enrollments_user_id, enrollments.course_id AS enrollments_course_id, enrollments.status AS enrollments_status, enrollments.rating AS enrollments_rating, enrollments.review AS enrollments_review, enrollments.created_at AS enrollments_created_at, enrollments.updated_at AS enrollments_updated_at 
+FROM enrollments 
+WHERE %(param_1)s = enrollments.user_id
+2023-10-23 00:46:00,357 - sqlalchemy.engine.Engine - INFO - [cached since 0.03999s ago] {'param_1': 8}
+2023-10-23 00:46:00,359 - sqlalchemy.engine.Engine - INFO - SELECT enrollments.id AS enrollments_id, enrollments.user_id AS enrollments_user_id, enrollments.course_id AS enrollments_course_id, enrollments.status AS enrollments_status, enrollments.rating AS enrollments_rating, enrollments.review AS enrollments_review, enrollments.created_at AS enrollments_created_at, enrollments.updated_at AS enrollments_updated_at 
+FROM enrollments 
+WHERE %(param_1)s = enrollments.user_id
+2023-10-23 00:46:00,361 - sqlalchemy.engine.Engine - INFO - [cached since 0.04436s ago] {'param_1': 9}
+2023-10-23 00:46:00,367 - sqlalchemy.engine.Engine - INFO - SELECT enrollments.id AS enrollments_id, enrollments.user_id AS enrollments_user_id, enrollments.course_id AS enrollments_course_id, enrollments.status AS enrollments_status, enrollments.rating AS enrollments_rating, enrollments.review AS enrollments_review, enrollments.created_at AS enrollments_created_at, enrollments.updated_at AS enrollments_updated_at 
+FROM enrollments 
+WHERE %(param_1)s = enrollments.user_id
+2023-10-23 00:46:00,368 - sqlalchemy.engine.Engine - INFO - [cached since 0.05135s ago] {'param_1': 11}
+2023-10-23 00:46:00,371 - sqlalchemy.engine.Engine - INFO - SELECT enrollments.id AS enrollments_id, enrollments.user_id AS enrollments_user_id, enrollments.course_id AS enrollments_course_id, enrollments.status AS enrollments_status, enrollments.rating AS enrollments_rating, enrollments.review AS enrollments_review, enrollments.created_at AS enrollments_created_at, enrollments.updated_at AS enrollments_updated_at 
+FROM enrollments 
+WHERE %(param_1)s = enrollments.user_id
+2023-10-23 00:46:00,373 - sqlalchemy.engine.Engine - INFO - [cached since 0.05617s ago] {'param_1': 12}
+2023-10-23 00:46:00,378 - sqlalchemy.engine.Engine - INFO - SELECT enrollments.id AS enrollments_id, enrollments.user_id AS enrollments_user_id, enrollments.course_id AS enrollments_course_id, enrollments.status AS enrollments_status, enrollments.rating AS enrollments_rating, enrollments.review AS enrollments_review, enrollments.created_at AS enrollments_created_at, enrollments.updated_at AS enrollments_updated_at 
+FROM enrollments 
+WHERE %(param_1)s = enrollments.user_id
+2023-10-23 00:46:00,381 - sqlalchemy.engine.Engine - INFO - [cached since 0.06444s ago] {'param_1': 13}
+2023-10-23 00:46:00,384 - sqlalchemy.engine.Engine - INFO - SELECT enrollments.id AS enrollments_id, enrollments.user_id AS enrollments_user_id, enrollments.course_id AS enrollments_course_id, enrollments.status AS enrollments_status, enrollments.rating AS enrollments_rating, enrollments.review AS enrollments_review, enrollments.created_at AS enrollments_created_at, enrollments.updated_at AS enrollments_updated_at 
+FROM enrollments 
+WHERE %(param_1)s = enrollments.user_id
+2023-10-23 00:46:00,386 - sqlalchemy.engine.Engine - INFO - [cached since 0.06893s ago] {'param_1': 14}
+2023-10-23 00:46:00,388 - sqlalchemy.engine.Engine - INFO - SELECT enrollments.id AS enrollments_id, enrollments.user_id AS enrollments_user_id, enrollments.course_id AS enrollments_course_id, enrollments.status AS enrollments_status, enrollments.rating AS enrollments_rating, enrollments.review AS enrollments_review, enrollments.created_at AS enrollments_created_at, enrollments.updated_at AS enrollments_updated_at 
+FROM enrollments 
+WHERE %(param_1)s = enrollments.user_id
+2023-10-23 00:46:00,390 - sqlalchemy.engine.Engine - INFO - [cached since 0.07334s ago] {'param_1': 15}
+2023-10-23 00:46:00,397 - sqlalchemy.engine.Engine - INFO - SELECT enrollments.id AS enrollments_id, enrollments.user_id AS enrollments_user_id, enrollments.course_id AS enrollments_course_id, enrollments.status AS enrollments_status, enrollments.rating AS enrollments_rating, enrollments.review AS enrollments_review, enrollments.created_at AS enrollments_created_at, enrollments.updated_at AS enrollments_updated_at 
+FROM enrollments 
+WHERE %(param_1)s = enrollments.user_id
+2023-10-23 00:46:00,399 - sqlalchemy.engine.Engine - INFO - [cached since 0.08238s ago] {'param_1': 18}
+2023-10-23 00:46:00,403 - sqlalchemy.engine.Engine - INFO - SELECT enrollments.id AS enrollments_id, enrollments.user_id AS enrollments_user_id, enrollments.course_id AS enrollments_course_id, enrollments.status AS enrollments_status, enrollments.rating AS enrollments_rating, enrollments.review AS enrollments_review, enrollments.created_at AS enrollments_created_at, enrollments.updated_at AS enrollments_updated_at 
+FROM enrollments 
+WHERE %(param_1)s = enrollments.user_id
+2023-10-23 00:46:00,405 - sqlalchemy.engine.Engine - INFO - [cached since 0.08821s ago] {'param_1': 19}
+2023-10-23 00:46:00,408 - sqlalchemy.engine.Engine - INFO - SELECT enrollments.id AS enrollments_id, enrollments.user_id AS enrollments_user_id, enrollments.course_id AS enrollments_course_id, enrollments.status AS enrollments_status, enrollments.rating AS enrollments_rating, enrollments.review AS enrollments_review, enrollments.created_at AS enrollments_created_at, enrollments.updated_at AS enrollments_updated_at 
+FROM enrollments 
+WHERE %(param_1)s = enrollments.user_id
+2023-10-23 00:46:00,410 - sqlalchemy.engine.Engine - INFO - [cached since 0.09304s ago] {'param_1': 21}
+2023-10-23 00:46:00,415 - sqlalchemy.engine.Engine - INFO - SELECT enrollments.id AS enrollments_id, enrollments.user_id AS enrollments_user_id, enrollments.course_id AS enrollments_course_id, enrollments.status AS enrollments_status, enrollments.rating AS enrollments_rating, enrollments.review AS enrollments_review, enrollments.created_at AS enrollments_created_at, enrollments.updated_at AS enrollments_updated_at 
+FROM enrollments 
+WHERE %(param_1)s = enrollments.user_id
+2023-10-23 00:46:00,417 - sqlalchemy.engine.Engine - INFO - [cached since 0.09989s ago] {'param_1': 22}
+2023-10-23 00:46:00,420 - sqlalchemy.engine.Engine - INFO - SELECT enrollments.id AS enrollments_id, enrollments.user_id AS enrollments_user_id, enrollments.course_id AS enrollments_course_id, enrollments.status AS enrollments_status, enrollments.rating AS enrollments_rating, enrollments.review AS enrollments_review, enrollments.created_at AS enrollments_created_at, enrollments.updated_at AS enrollments_updated_at 
+FROM enrollments 
+WHERE %(param_1)s = enrollments.user_id
+2023-10-23 00:46:00,422 - sqlalchemy.engine.Engine - INFO - [cached since 0.1053s ago] {'param_1': 24}
+2023-10-23 00:46:00,426 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2023-10-23 00:46:00,434 - werkzeug - INFO - 127.0.0.1 - - [23/Oct/2023 00:46:00] "GET /users/ HTTP/1.1" 200 -
+2023-10-23 00:48:04,257 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2023-10-23 00:48:04,258 - sqlalchemy.engine.Engine - INFO - SELECT users.id AS users_id, users.email AS users_email, users.password AS users_password, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.id = %(pk_1)s
+2023-10-23 00:48:04,259 - sqlalchemy.engine.Engine - INFO - [generated in 0.00124s] {'pk_1': 1}
+2023-10-23 00:48:04,261 - [ONLINE COURSE LOG] - WARNING - 401 - DON'T HAVE PERMISSION TO DELETE USER DATA WITH ID 1
+2023-10-23 00:48:04,262 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2023-10-23 00:48:04,264 - werkzeug - INFO - 127.0.0.1 - - [23/Oct/2023 00:48:04] "[31m[1mDELETE /users/1 HTTP/1.1[0m" 401 -
+2023-10-23 00:58:29,421 - werkzeug - INFO -  * Detected change in 'D:\\Belajar\\belajar-python\\tugas_api\\app\\views\\auth.py', reloading
+2023-10-23 00:58:32,781 - werkzeug - INFO -  * Running on http://localhost:7000/ (Press CTRL+C to quit)
+2023-10-23 01:11:21,144 - werkzeug - INFO -  * Detected change in 'D:\\Belajar\\belajar-python\\tugas_api\\app\\views\\categories.py', reloading
+2023-10-23 01:11:25,159 - werkzeug - INFO -  * Running on http://localhost:7000/ (Press CTRL+C to quit)
+2023-10-23 01:15:36,221 - werkzeug - INFO -  * Detected change in 'D:\\Belajar\\belajar-python\\tugas_api\\app\\views\\categories.py', reloading
+2023-10-23 01:15:39,451 - werkzeug - INFO -  * Running on http://localhost:7000/ (Press CTRL+C to quit)
+2023-10-23 01:29:53,963 - werkzeug - INFO -  * Detected change in 'D:\\Belajar\\belajar-python\\tugas_api\\app\\views\\courses.py', reloading
+2023-10-23 01:29:57,938 - werkzeug - INFO -  * Running on http://localhost:7000/ (Press CTRL+C to quit)
+2023-10-23 01:45:18,247 - werkzeug - INFO -  * Detected change in 'D:\\Belajar\\belajar-python\\tugas_api\\app\\views\\enrollments.py', reloading
+2023-10-23 01:45:21,608 - werkzeug - INFO -  * Running on http://localhost:7000/ (Press CTRL+C to quit)
+2023-10-23 01:53:23,399 - werkzeug - INFO - 127.0.0.1 - - [23/Oct/2023 01:53:23] "[31m[1mPOST /categories/ HTTP/1.1[0m" 401 -
+2023-10-23 01:53:35,791 - sqlalchemy.engine.Engine - INFO - SELECT DATABASE()
+2023-10-23 01:53:35,792 - sqlalchemy.engine.Engine - INFO - [raw sql] {}
+2023-10-23 01:53:35,794 - sqlalchemy.engine.Engine - INFO - SELECT @@sql_mode
+2023-10-23 01:53:35,795 - sqlalchemy.engine.Engine - INFO - [raw sql] {}
+2023-10-23 01:53:35,796 - sqlalchemy.engine.Engine - INFO - SELECT @@lower_case_table_names
+2023-10-23 01:53:35,797 - sqlalchemy.engine.Engine - INFO - [raw sql] {}
+2023-10-23 01:53:35,798 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2023-10-23 01:53:35,801 - sqlalchemy.engine.Engine - INFO - SELECT users.id AS users_id, users.email AS users_email, users.password AS users_password, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+2023-10-23 01:53:35,803 - sqlalchemy.engine.Engine - INFO - [generated in 0.00153s] {'email_1': 'testtest@mail.com', 'param_1': 1}
+2023-10-23 01:53:35,805 - [ONLINE COURSE LOG] - WARNING - 400 - USER WITH EMAIL testtest@mail.com IS NOT FOUND
+2023-10-23 01:53:35,806 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2023-10-23 01:53:35,810 - werkzeug - INFO - 127.0.0.1 - - [23/Oct/2023 01:53:35] "[31m[1mPOST /auth/signin HTTP/1.1[0m" 400 -
+2023-10-23 01:53:47,608 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2023-10-23 01:53:47,609 - sqlalchemy.engine.Engine - INFO - SELECT users.id AS users_id, users.email AS users_email, users.password AS users_password, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+2023-10-23 01:53:47,610 - sqlalchemy.engine.Engine - INFO - [cached since 11.81s ago] {'email_1': 'test3@mail.com', 'param_1': 1}
+2023-10-23 01:53:47,910 - [ONLINE COURSE LOG] - INFO - USER DATA WITH ID 24 IS LOGGED IN
+2023-10-23 01:53:47,911 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2023-10-23 01:53:47,912 - werkzeug - INFO - 127.0.0.1 - - [23/Oct/2023 01:53:47] "[35m[1mPOST /auth/signin HTTP/1.1[0m" 201 -
+2023-10-23 01:54:05,446 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2023-10-23 01:54:05,449 - sqlalchemy.engine.Engine - INFO - SELECT categories.id AS categories_id, categories.category_name AS categories_category_name, categories.created_at AS categories_created_at, categories.updated_at AS categories_updated_at 
+FROM categories 
+WHERE categories.category_name = %(category_name_1)s 
+ LIMIT %(param_1)s
+2023-10-23 01:54:05,450 - sqlalchemy.engine.Engine - INFO - [generated in 0.00157s] {'category_name_1': 'Data Structure and Algorithm', 'param_1': 1}
+2023-10-23 01:54:05,462 - sqlalchemy.engine.Engine - INFO - INSERT INTO categories (category_name) VALUES (%(category_name)s)
+2023-10-23 01:54:05,463 - sqlalchemy.engine.Engine - INFO - [generated in 0.00098s] {'category_name': 'Data Structure and Algorithm'}
+2023-10-23 01:54:05,470 - sqlalchemy.engine.Engine - INFO - COMMIT
+2023-10-23 01:54:05,475 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2023-10-23 01:54:05,477 - sqlalchemy.engine.Engine - INFO - SELECT categories.id AS categories_id, categories.category_name AS categories_category_name, categories.created_at AS categories_created_at, categories.updated_at AS categories_updated_at 
+FROM categories 
+WHERE categories.id = %(pk_1)s
+2023-10-23 01:54:05,478 - sqlalchemy.engine.Engine - INFO - [generated in 0.00106s] {'pk_1': 3}
+2023-10-23 01:54:05,480 - [ONLINE COURSE LOG] - INFO - POST CATEGORY DATA WITH ID 3
+2023-10-23 01:54:05,480 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2023-10-23 01:54:05,482 - werkzeug - INFO - 127.0.0.1 - - [23/Oct/2023 01:54:05] "[35m[1mPOST /categories/ HTTP/1.1[0m" 201 -
+2023-10-23 01:56:34,329 - werkzeug - INFO -  * Detected change in 'D:\\Belajar\\belajar-python\\tugas_api\\app\\views\\modules.py', reloading
+2023-10-23 01:56:37,151 - werkzeug - INFO -  * Running on http://localhost:7000/ (Press CTRL+C to quit)

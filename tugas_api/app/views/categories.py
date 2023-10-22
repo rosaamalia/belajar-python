@@ -5,6 +5,7 @@ from flask_jwt_extended import jwt_required
 
 from ..utils import db
 from ..utils.utils import checkCategoryNameExist
+from ..logs.log import logger
 from ..models.categories import Categories
 
 categories_ns = Namespace('categories', description='Namespace for categories')
@@ -58,8 +59,10 @@ class CategoryGetPost(Resource):
         """Get all categories"""
         try:
             data = Categories.query.all()
+            logger.info(f"GET ALL CATEGORY DATA")
             return data, HTTPStatus.OK
         except Exception as e:
+            logger.error(str(e))
             return [], HTTPStatus.INTERNAL_SERVER_ERROR
     
     @categories_ns.doc(description = "Create new category data")
@@ -75,6 +78,7 @@ class CategoryGetPost(Resource):
 
         # Cek nama kategori sudah ada
         if(checkCategoryNameExist(data.get('category_name')) is True):
+            logger.warning(f"{HTTPStatus.BAD_REQUEST} - CATEGORY NAME {data.get('category_name')} IS ALREADY EXIST")
             categories_ns.abort(HTTPStatus.BAD_REQUEST, message="Name of the category is already exist.")
 
         input = Categories(
@@ -84,6 +88,7 @@ class CategoryGetPost(Resource):
         db.session.add(input)
         db.session.commit()
 
+        logger.info(f"POST CATEGORY DATA WITH ID {input.id}")
         return input, HTTPStatus.CREATED
         
 @categories_ns.route('/<int:category_id>')
@@ -96,9 +101,10 @@ class CategoryById(Resource):
         """Get category data by id"""
         try:
             data = Categories.query.get_or_404(category_id)
+            logger.info(f"GET CATEGORY DATA WITH ID {data.id}")
             return data, HTTPStatus.OK
-
         except Exception as e:
+            logger.error(str(e))
             return [], HTTPStatus.INTERNAL_SERVER_ERROR
     
     @categories_ns.doc(description = "Edit category data by id", params = {"category_id": "Id category"})
@@ -115,9 +121,10 @@ class CategoryById(Resource):
             data_from_database.category_name = data['category_name']
 
             db.session.commit()
-
+            logger.info(f"PUT CATEGORY DATA WITH ID {data_from_database.id}")
             return [], HTTPStatus.OK
         except Exception as e:
+            logger.error(str(e))
             return [], HTTPStatus.INTERNAL_SERVER_ERROR
     
     @categories_ns.doc(description = "Delete category data by id", params = {"category_id": "Id category"})
@@ -131,4 +138,5 @@ class CategoryById(Resource):
         db.session.delete(data)
         db.session.commit()
 
+        logger.info(f"DELETE CATEGORY DATA WITH ID {data.id}")
         return {'message': "Data is succesfully deleted."}, HTTPStatus.OK
